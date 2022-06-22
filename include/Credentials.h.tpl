@@ -1,0 +1,13 @@
+//
+// Created by Konstantinos Paliouras on 15/06/2022.
+//
+
+#ifndef DOOR_GUARD_CREDENTIALS_H
+#define DOOR_GUARD_CREDENTIALS_H
+
+#define SECRET_WIFI_SSID ""
+#define SECRET_WIFI_PASS ""
+#define SECRET_IOT_CLOUD_DEVICE_NAME ""
+#define SECRET_IOT_CLOUD_DEVICE_KEY ""
+
+#endif //DOOR_GUARD_CREDENTIALS_H
