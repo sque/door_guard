@@ -8,10 +8,10 @@ loop
 ## Examples
 
 ```c++
-#include <FixedFrequency.h>
+#include <FrequencyLimiter.h>
 
-FixedFrequency networkFrequency(10);  // Process network at 10Hz
-FixedFrequency readSensorsFrequency(2);  // Read new sensor values 2 times per second
+FrequencyLimiter networkFrequency(Frequency(10));  // Process network at 10Hz
+FrequencyLimiter readSensorsFrequency(PeriodMs(500));  // Read new sensor with a period of 500ms
 
 void loop() {
 
@@ -23,6 +23,5 @@ void loop() {
         // Read sensors.
     }
     
-}
-
+};
 ```

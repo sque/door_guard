@@ -20,7 +20,9 @@ public:
         PACMAN,
         HARRY_POTTER,
         DOOM,
-        UGLY_ALARM
+        UGLY_ALARM,
+        PERSISTENT_BEEP,
+        LOCKED_BEEP
     };
 };
 

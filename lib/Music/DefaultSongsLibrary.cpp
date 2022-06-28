@@ -452,6 +452,18 @@ const int ugly_alarm_notes[] = {
         NOTE_C6, 4, NOTE_FS5, 4, NOTE_C5, 4, NOTE_FS5, 4
 };
 
+const int persistent_beep_notes[] = {
+        NOTE_FS5, 2, REST, 2,
+        NOTE_FS5, 2, REST, 2,
+        NOTE_FS5, 2, REST, 2,
+        NOTE_FS5, 4, NOTE_FS5, 4, NOTE_FS5, 2,
+        REST, 2
+};
+
+const int locked_beep_notes[] = {
+        NOTE_A6, 16, REST, 32, NOTE_A6, 16
+};
+
 const size_t note_size = sizeof(imperial_march_notes[0]) * 2;
 Song imperial_march_song("Imperial March", imperial_march_notes,
                          sizeof(imperial_march_notes) / note_size,
@@ -479,6 +491,11 @@ Song doom_song("Dooms Gate", doom_notes,
                225);
 Song ugly_alarm("Ugly Alarm", ugly_alarm_notes, sizeof(ugly_alarm_notes) / note_size,
                 120);
+Song persistent_beep("Persistent beep", persistent_beep_notes,
+                     sizeof(persistent_beep_notes) / note_size, 60);
+
+Song locked_beep("Locked beep", locked_beep_notes,
+                 sizeof(locked_beep_notes) / note_size, 130);
 
 DefaultSongsLibrary::DefaultSongsLibrary() {
     add_song(Songs::IMPERIAL_MARCH, &imperial_march_song);
@@ -490,5 +507,6 @@ DefaultSongsLibrary::DefaultSongsLibrary() {
     add_song(Songs::HARRY_POTTER, &harry_potter_song);
     add_song(Songs::DOOM, &doom_song);
     add_song(Songs::UGLY_ALARM, &ugly_alarm);
-
+    add_song(Songs::PERSISTENT_BEEP, &persistent_beep);
+    add_song(Songs::LOCKED_BEEP, &locked_beep);
 }
