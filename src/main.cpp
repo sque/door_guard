@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <DoorGuardUi.h>
-#include<DoorLockSensor.h>
+#include <DoorLockSensor.h>
 #include <LightsDetector.h>
 #include <SongPlayer.h>
 #include <DefaultSongsLibrary.h>
@@ -14,14 +14,14 @@
 #include "Credentials.h"
 
 // 5 Seconds for a person to unlock the door and then enter should be safe
-#define UNLOCK_GRACE_TIME_MS 15000
+#define UNLOCK_GRACE_TIME_MS 45000
 
 // The distance measurement is by default around 80, and it seems that at close
 // distances the sensor flirts around 40. So 50 should be safe.
 #define LOCK_SENSOR_DISTANCE_THRESHOLD 50
 
 // Luminance in dark is around 4, 50 should be safe.
-#define LIGHT_SENSOR_LUMINANCE_THRESHOLD 80
+#define LIGHT_SENSOR_LUMINANCE_THRESHOLD 60
 
 DoorGuardUi ui;
 DoorLockSensor lockSensor(LOCK_SENSOR_DISTANCE_THRESHOLD);
