@@ -44,16 +44,20 @@ const uint8_t frame_1[] PROGMEM = {
         0x00, 0x00, 0x80, 0x01, 0xff, 0xff, 0xff, 0x00
 };
 
-Bitmap yoda_bitmap_1(frame_1, FRAME_WIDTH, FRAME_HEIGHT);
-Bitmap yoda_bitmap_2(frame_2, FRAME_WIDTH, FRAME_HEIGHT);
+
 
 YodaAnimation::YodaAnimation(Adafruit_GFX &display, uint8_t x, uint8_t y):
         Animation(display, x, y, FRAME_WIDTH, FRAME_HEIGHT){
 
-    frames.push_back(Frame(yoda_bitmap_1, 5000));
-    frames.push_back(Frame(yoda_bitmap_2, 500));
-    frames.push_back(Frame(yoda_bitmap_1, 500));
-    frames.push_back(Frame(yoda_bitmap_2, 500));
+    bitmaps = new Bitmap[2]{
+            Bitmap(frame_1, FRAME_WIDTH, FRAME_HEIGHT),
+            Bitmap(frame_2, FRAME_WIDTH, FRAME_HEIGHT)
+    };
+
+    frames.push_back(Frame(bitmaps[0], 5000));
+    frames.push_back(Frame(bitmaps[1], 500));
+    frames.push_back(Frame(bitmaps[0], 500));
+    frames.push_back(Frame(bitmaps[1], 500));
 
 }
 

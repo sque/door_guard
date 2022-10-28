@@ -11,6 +11,8 @@
 #include <Animation.h>
 
 class YodaAnimation : public Animation {
+protected:
+    Bitmap * bitmaps;
 public:
     YodaAnimation(Adafruit_GFX &display, uint8_t x, uint8_t y);
 
