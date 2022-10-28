@@ -6,7 +6,7 @@
 #include "Song.h"
 #include "MusicNotes.h"
 
-const int imperial_march_notes[] = {
+const int PROGMEM imperial_march_notes[]  = {
 
         // Dart Vader theme (Imperial March) - Star wars
         // Score available at https://musescore.com/user/202909/scores/1141521
@@ -33,7 +33,7 @@ const int imperial_march_notes[] = {
         NOTE_A4, 4, NOTE_F4, -8, NOTE_C5, 16, NOTE_A4, 2,
 };
 
-const int super_mario_notes[] = {
+const int PROGMEM super_mario_notes[]  = {
 
         // Super Mario Bros theme
         // Score available at https://musescore.com/user/2123/scores/2145
@@ -125,7 +125,7 @@ const int super_mario_notes[] = {
 
 };
 
-const int the_lions_sleep_tonight_notes[] = {
+const int PROGMEM the_lions_sleep_tonight_notes[]  = {
 
         // The Lion Sleeps Tonight
         // Score available at https://musescore.com/user/18545446/scores/5061407
@@ -219,7 +219,7 @@ const int the_lions_sleep_tonight_notes[] = {
 
 };
 
-const int tetris_notes[] = {
+const int PROGMEM tetris_notes[]  = {
 
         //Based on the arrangement at https://www.flutetunes.com/tunes.php?id=192
 
@@ -254,7 +254,7 @@ const int tetris_notes[] = {
         NOTE_GS5, 2,
 };
 
-const int nokia_ringtone_notes[] = {
+const int PROGMEM nokia_ringtone_notes[]  = {
 
         // Nokia Ringtone
         // Score available at https://musescore.com/user/29944637/scores/5266155
@@ -265,7 +265,7 @@ const int nokia_ringtone_notes[] = {
         NOTE_A4, 2,
 };
 
-const int pacman_notes[] = {
+const int PROGMEM pacman_notes[]  = {
 
         // Pacman
         // Score available at https://musescore.com/user/85429/scores/107109
@@ -278,7 +278,7 @@ const int pacman_notes[] = {
         NOTE_F5, 32, NOTE_FS5, 32, NOTE_G5, 32, NOTE_G5, 32, NOTE_GS5, 32, NOTE_A5, 16, NOTE_B5, 8
 };
 
-const int harry_potter_notes[] = {
+const int PROGMEM harry_potter_notes[]  = {
 
 
         // Hedwig's theme from the Harry Potter Movies
@@ -322,7 +322,7 @@ const int harry_potter_notes[] = {
 
 };
 
-const int doom_notes[] PROGMEM = {
+const int PROGMEM doom_notes[]  = {
 
         // At Doom's Gate (E1M1)
         // Score available at https://musescore.com/pieridot/doom
@@ -448,11 +448,11 @@ const int doom_notes[] PROGMEM = {
         NOTE_G3, -16, NOTE_B3, -16, NOTE_G3, -16, NOTE_E3, -16,
 };
 
-const int ugly_alarm_notes[] = {
+const int PROGMEM ugly_alarm_notes[]  = {
         NOTE_C6, 4, NOTE_FS5, 4, NOTE_C5, 4, NOTE_FS5, 4
 };
 
-const int persistent_beep_notes[] = {
+const int PROGMEM persistent_beep_notes[]  = {
         NOTE_FS5, 2, REST, 2,
         NOTE_FS5, 2, REST, 2,
         NOTE_FS5, 2, REST, 2,
@@ -460,53 +460,64 @@ const int persistent_beep_notes[] = {
         REST, 2
 };
 
-const int locked_beep_notes[] = {
+const int PROGMEM locked_beep_notes[] = {
         NOTE_A6, 16, REST, 32, NOTE_A6, 16
 };
 
 const size_t note_size = sizeof(imperial_march_notes[0]) * 2;
-Song imperial_march_song("Imperial March", imperial_march_notes,
-                         sizeof(imperial_march_notes) / note_size,
-                         120);
-Song super_mario_song("Super Mario", super_mario_notes,
-                      sizeof(super_mario_notes) / note_size,
-                      250);
-Song the_lions_sleep_tonight_song("The Lions Sleep Tonight", the_lions_sleep_tonight_notes,
-                                  sizeof(the_lions_sleep_tonight_notes) / note_size,
-                                  122);
-Song tetris_song("Tetris", tetris_notes,
-                 sizeof(tetris_notes) / note_size,
-                 144);
-Song nokia_ringtone("Nokia Ringtone", nokia_ringtone_notes,
-                    sizeof(nokia_ringtone_notes) / note_size,
-                    100);
-Song pacman_song("Pacman", pacman_notes,
-                 sizeof(pacman_notes) / note_size,
-                 105);
-Song harry_potter_song("Harry Potter", harry_potter_notes,
-                       sizeof(harry_potter_notes) / note_size,
-                       144);
-Song doom_song("Dooms Gate", doom_notes,
-               sizeof(doom_notes) / note_size,
-               225);
-Song ugly_alarm("Ugly Alarm", ugly_alarm_notes, sizeof(ugly_alarm_notes) / note_size,
-                120);
-Song persistent_beep("Persistent beep", persistent_beep_notes,
-                     sizeof(persistent_beep_notes) / note_size, 60);
 
-Song locked_beep("Locked beep", locked_beep_notes,
-                 sizeof(locked_beep_notes) / note_size, 130);
 
 DefaultSongsLibrary::DefaultSongsLibrary() {
-    add_song(Songs::IMPERIAL_MARCH, &imperial_march_song);
-    add_song(Songs::SUPER_MARIO, &super_mario_song);
-    add_song(Songs::THE_LIONS_SLEEP_TONIGHT, &the_lions_sleep_tonight_song);
-    add_song(Songs::TETRIS, &tetris_song);
-    add_song(Songs::NOKIA_RINGTONE, &nokia_ringtone);
-    add_song(Songs::PACMAN, &pacman_song);
-    add_song(Songs::HARRY_POTTER, &harry_potter_song);
-    add_song(Songs::DOOM, &doom_song);
-    add_song(Songs::UGLY_ALARM, &ugly_alarm);
-    add_song(Songs::PERSISTENT_BEEP, &persistent_beep);
-    add_song(Songs::LOCKED_BEEP, &locked_beep);
+    add_song(Songs::IMPERIAL_MARCH, [](){
+        return new Song("Imperial March", imperial_march_notes,
+                                 sizeof(imperial_march_notes) / note_size,
+                                 120);
+    });
+    add_song(Songs::SUPER_MARIO, [](){
+        return new Song("Super Mario", super_mario_notes,
+                      sizeof(super_mario_notes) / note_size,
+                      250);
+    });
+    add_song(Songs::THE_LIONS_SLEEP_TONIGHT, [](){
+        return new Song("The Lions Sleep Tonight", the_lions_sleep_tonight_notes,
+                                  sizeof(the_lions_sleep_tonight_notes) / note_size,
+                                  122);
+    });
+    add_song(Songs::TETRIS, [](){
+        return new Song("Tetris", tetris_notes,
+                 sizeof(tetris_notes) / note_size,
+                 144);
+    });
+    add_song(Songs::NOKIA_RINGTONE, [](){
+        return new Song("Nokia Ringtone", nokia_ringtone_notes,
+                    sizeof(nokia_ringtone_notes) / note_size,
+                    100);
+    });
+    add_song(Songs::PACMAN, [](){
+        return new Song("Pacman", pacman_notes,
+                 sizeof(pacman_notes) / note_size,
+                 105);
+    });
+    add_song(Songs::HARRY_POTTER, [](){
+        return new Song("Harry Potter", harry_potter_notes,
+                        sizeof(harry_potter_notes) / note_size,
+                        144);
+    });
+    add_song(Songs::DOOM, [](){
+        return new Song("Dooms Gate", doom_notes,
+                        sizeof(doom_notes) / note_size,
+                        225);
+    });
+    add_song(Songs::UGLY_ALARM, [](){
+        return new Song("Ugly Alarm", ugly_alarm_notes, sizeof(ugly_alarm_notes) / note_size,
+                        120);
+    });
+    add_song(Songs::PERSISTENT_BEEP, [](){
+        return new Song("Persistent beep", persistent_beep_notes,
+                        sizeof(persistent_beep_notes) / note_size, 60);
+    });
+    add_song(Songs::LOCKED_BEEP, [](){
+        return new Song("Locked beep", locked_beep_notes,
+                        sizeof(locked_beep_notes) / note_size, 130);
+    });
 }
