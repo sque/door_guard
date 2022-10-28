@@ -1,17 +1,18 @@
 #include <Arduino.h>
+#include "PinLayout.h"
+#include "Credentials.h"
 #include <DoorGuardUi.h>
 #include <DoorLockSensor.h>
 #include <LightsDetector.h>
 #include <SongPlayer.h>
 #include <DefaultSongsLibrary.h>
-#include <PinLayout.h>
 #include <BlinkControl.h>
 #include <StateMachine.h>
 #include <OneButton.h>
 #include <FrequencyLimiter.h>
 #include <AwsPubSubClient.h>
 #include <ArduinoJson.h>
-#include "Credentials.h"
+
 
 // 5 Seconds for a person to unlock the door and then enter should be safe
 #define UNLOCK_GRACE_TIME_MS 45000
@@ -23,7 +24,11 @@
 // Luminance in dark is around 4, 50 should be safe.
 #define LIGHT_SENSOR_LUMINANCE_THRESHOLD 60
 
-DoorGuardUi ui;
+// Song to play when someone walks in.
+#define WALK_IN_SONG DefaultSongsLibrary::Songs::HARRY_POTTER
+
+DoorGuardUi ui(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WEMOS_OLED);
+
 DoorLockSensor lockSensor(LOCK_SENSOR_DISTANCE_THRESHOLD);
 LightsDetector lightsDetector(LIGHT_SENSOR_LUMINANCE_THRESHOLD);
 
@@ -95,8 +100,8 @@ void setup() {
     }, unlockedOccupiedState);
     lockedState->addTransition([]() {
         return ((!lockSensor.is_locked())
-        && (lockSensor.state_unchanged_time_ms() > UNLOCK_GRACE_TIME_MS)
-        && (!lightsDetector.is_turned_on()));
+                && (lockSensor.state_unchanged_time_ms() > UNLOCK_GRACE_TIME_MS)
+                && (!lightsDetector.is_turned_on()));
     }, unlockedUnattendedState);
     unlockedOccupiedState->addTransition([]() {
         return ((!lockSensor.is_locked()) && (!lightsDetector.is_turned_on()));
@@ -112,7 +117,7 @@ void setup() {
     }, lockedState);
 
     // Setup debug button
-    debugButton.attachClick([](){
+    debugButton.attachClick([]() {
         Serial.println("Debug button was pressed!");
         ui.switch_debug_info(!ui.is_debug_info_displayed());
     });
@@ -127,7 +132,7 @@ void publish_status() {
     DynamicJsonDocument shadow_doc(512);
     char jsonBuffer[512];
 
-    if (machine.stateList->get(machine.currentState) == lockedState){
+    if (machine.stateList->get(machine.currentState) == lockedState) {
         json_doc["state"] = "locked";
     } else if (machine.stateList->get(machine.currentState) == unlockedOccupiedState) {
         json_doc["state"] = "occupied";
@@ -153,13 +158,13 @@ void publish_status() {
 }
 
 void handle_locked_state() {
-    if(machine.executeOnce){
+    if (machine.executeOnce) {
         Serial.println("We are in locked state.");
         lockerLed.on();
         happyFaceLed.off();
         internal_player.stop();
         external_player.set_auto_restart(false);
-        external_player.play(song_library.get_song(DefaultSongsLibrary::Songs::LOCKED_BEEP));
+        external_player.play(song_library.get_song(DefaultSongsLibrary::Songs::LOCKED_BEEP)->load());
 
         // Update cloud status
         publish_status();
@@ -167,7 +172,7 @@ void handle_locked_state() {
 }
 
 void handle_unlocked_unattended_state() {
-    if(machine.executeOnce){
+    if (machine.executeOnce) {
         Serial.println("We are in unattended state.");
         lockerLed.blink2();
         happyFaceLed.off();
@@ -176,7 +181,7 @@ void handle_unlocked_unattended_state() {
         internal_player.set_auto_restart(true);
         internal_player.stop();
         external_player.set_auto_restart(true);
-        external_player.play(song_library.get_song(DefaultSongsLibrary::Songs::PERSISTENT_BEEP));
+        external_player.play(song_library.get_song(DefaultSongsLibrary::Songs::PERSISTENT_BEEP)->load());
 
         // Update cloud status
         publish_status();
@@ -184,14 +189,14 @@ void handle_unlocked_unattended_state() {
 }
 
 void handle_unlocked_occupied_state() {
-    if(machine.executeOnce){
+    if (machine.executeOnce) {
         Serial.println("We are in occupied state.");
         lockerLed.off();
         happyFaceLed.on();
 
         // Sound
         internal_player.set_auto_restart(false);
-        internal_player.play(song_library.get_song(DefaultSongsLibrary::Songs::IMPERIAL_MARCH));
+        internal_player.play(song_library.get_song(WALK_IN_SONG)->load());
 
         external_player.stop();
 
@@ -208,6 +213,7 @@ unsigned long last_time = millis();
 
 void loop() {
 
+
     if (readSensorsLimiter.process()) {
         Serial.println("Reading sensors.");
         lockSensor.update();
@@ -219,7 +225,7 @@ void loop() {
     debugButton.tick();
 
 
-    if(updateCloudLimiter.process()){
+    if (updateCloudLimiter.process()) {
         Serial.println("Updating cloud.");
         aws_client.loop();
     }
@@ -242,9 +248,10 @@ void loop() {
 
     // Calculate fps
     unsigned long current_time = millis();
-    float fps = 1000.0 / (float)(current_time - last_time);
+    float fps = 1000.0 / (float) (current_time - last_time);
     last_time = current_time;
     if (fpsPrinterLimiter.process()) {
+        Serial.println(ESP.getFreeHeap(),DEC);
         Serial.printf("FPS: %f\n", fps);
     }
 }

@@ -2,6 +2,8 @@
 // Created by Konstantinos Paliouras on 24/06/2022.
 //
 
+#define SSL_ERROR_MSG_SIZE 256
+
 #include "AwsPubSubClient.h"
 
 
@@ -106,6 +108,8 @@ AwsPubSubClient::State AwsPubSubClient::handleMqttConnect() {
         return State::MqttConnect;  // Skipping this loop because it is too often
     }
     if (pub_sub_client.connect(thing_name)) {
+        Serial.println("AWS IoT: MQTT connection established. Subscribing to channels.");
+
         // Re-subscribe
         for (auto& it : subscriptions) {
             if (pub_sub_client.subscribe(it.c_str())) {
@@ -119,12 +123,12 @@ AwsPubSubClient::State AwsPubSubClient::handleMqttConnect() {
         Serial.printf("AWS IoT: MQTT connection established!\n");
         return State::Connected;
     } else {
-        char buffer[512];
-        ssl_client.getLastSSLError(buffer, 512);
+        char ssl_desc[SSL_ERROR_MSG_SIZE];
+        int ssl_error_code = ssl_client.getLastSSLError(ssl_desc, SSL_ERROR_MSG_SIZE);
 
 
         Serial.printf("AWS IoT: Failed connecting to MQTT\n");
-        Serial.printf("AWS IoT: SSL: connected: %d, error: %s\n", ssl_client.connected(), buffer);
+        Serial.printf("AWS IoT: SSL: connected: %d, error: [%d] %s\n", ssl_client.connected(), ssl_error_code, ssl_desc);
 
         return State::PhyConnect;
     }
